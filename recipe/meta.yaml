@@ -11,33 +11,41 @@ source:
 
 build:
   number: 0
+  ignore_run_exports:
+    - nodejs
 
 requirements:
   build:
     - {{ compiler('c') }}
-    - {{ stdlib("c") }}
-    - {{ compiler('cxx') }}
     - make
-    - nodejs
+    # https://pnpm.io/installation#compatibility
+    # pnp10 supports from nodejs18
+    - nodejs >=18
   host:
-    - nodejs
+    - nodejs >=18
   run:
-    - nodejs
+    - nodejs >=18
 
 test:
   commands:
     - pnpm --help
 
 about:
-  home: https://github.com/pnpm/pnpm
+  home: https://pnpm.io/
+  summary: 📦🚀 Fast, disk space efficient package manager
   license: MIT
+  license_family: MIT
   license_file:
     - LICENSE
     - ThirdPartyLicenses.txt
-  summary: 📦🚀 Fast, disk space efficient package manager
+  description: Fast, disk space efficient package manager
+  dev_url: https://github.com/pnpm/pnpm
+  doc_url: https://pnpm.io/motivation
 
 extra:
   recipe-maintainers:
     - JaninaWibkerQC
     - xhochy
     - pavelzw
+  skip-lints:
+    - host_section_needs_exact_pinnings
