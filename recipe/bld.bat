@@ -21,7 +21,10 @@ if errorlevel 1 exit 1
 node %RECIPE_DIR%\deletePatchedDependencies.js
 if errorlevel 1 exit 1
 
-:: Skip installing optional dependencies,fuse-shared-library is not currently supported on: win
+:: When npx try to install pnpm it automatically tries to install fuse-native -> https://github.com/pnpm/pnpm/blob/v10.4.1/package.json#L119
+:: fuse-native have dependency on fuse-shared-library -> https://github.com/pnpm/pnpm/blob/v10.4.1/pnpm-lock.yaml#L18713
+:: fuse-shared-library is not currently supported on: win -> https://github.com/fuse-friends/fuse-shared-library/blob/master/index.js#L17
+:: Skip installing optional dependencies for windows
 @echo "## Installing prod dependencies"
 cmd /c npx pnpm@%PKG_VERSION% install --prod --no-optional
 if errorlevel 1 exit 1
