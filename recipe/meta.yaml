@@ -17,6 +17,7 @@ build:
 requirements:
   build:
     - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
     - make
     # https://pnpm.io/installation#compatibility
     # pnp10 supports from nodejs18
