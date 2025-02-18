@@ -13,12 +13,15 @@ build:
   number: 0
   ignore_run_exports:
     - nodejs
+    - vs2015_runtime
+  # nodejs is not avaliable on linux-s390x
+  skip: True  # [s390x]
 
 requirements:
   build:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-    - make
+    - make  # [not win]
     # https://pnpm.io/installation#compatibility
     # pnp10 supports from nodejs18
     - nodejs >=18
@@ -26,6 +29,7 @@ requirements:
     - nodejs >=18
   run:
     - nodejs >=18
+    - vs2015_runtime  # [win]
 
 test:
   commands:

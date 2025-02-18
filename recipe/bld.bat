@@ -21,8 +21,9 @@ if errorlevel 1 exit 1
 node %RECIPE_DIR%\deletePatchedDependencies.js
 if errorlevel 1 exit 1
 
+:: Skip installing optional dependencies,fuse-shared-library is not currently supported on: win
 @echo "## Installing prod dependencies"
-cmd /c npx pnpm@%PKG_VERSION% install --prod
+cmd /c npx pnpm@%PKG_VERSION% install --prod --no-optional
 if errorlevel 1 exit 1
 
 @echo "## Generating ThirdPartyLicenses.txt"
