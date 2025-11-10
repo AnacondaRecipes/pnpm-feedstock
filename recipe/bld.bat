@@ -20,13 +20,14 @@ popd
 
 rmdir pnpm\artifacts\exe /s /q
 if errorlevel 1 exit 1
-node %RECIPE_DIR%\deletePatchedDependencies.js
-if errorlevel 1 exit 1
 
-:: Delete lockfile and any cached pnpm state to get a clean start
+:: Delete lockfile and any cached state BEFORE modifying package.json
 del pnpm-lock.yaml
 if exist .pnpm-store rmdir /s /q .pnpm-store
 if exist node_modules rmdir /s /q node_modules
+
+node %RECIPE_DIR%\deletePatchedDependencies.js
+if errorlevel 1 exit 1
 
 :: When npx try to install pnpm it automatically tries to install fuse-native -> https://github.com/pnpm/pnpm/blob/v10.4.1/package.json#L119
 :: fuse-native have dependency on fuse-shared-library -> https://github.com/pnpm/pnpm/blob/v10.4.1/pnpm-lock.yaml#L18713
@@ -35,9 +36,7 @@ if exist node_modules rmdir /s /q node_modules
 @echo "## Installing prod dependencies"
 :: Use npx from PATH and add --engine-strict=false to bypass Node.js version checks
 :: Use --node-linker=hoisted on Windows to avoid symlink permission issues
-:: Use --no-frozen-lockfile to regenerate the lockfile after we've modified package.json
-:: Use --force to ensure a clean install
-cmd /c "npx pnpm@%PKG_VERSION% install --prod --no-optional --engine-strict=false --node-linker=hoisted --no-frozen-lockfile --force"
+cmd /c "npx pnpm@%PKG_VERSION% install --prod --no-optional --engine-strict=false --node-linker=hoisted"
 if errorlevel 1 exit 1
 
 @echo "## Generating ThirdPartyLicenses.txt"
