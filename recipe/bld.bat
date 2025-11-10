@@ -1,9 +1,12 @@
 @echo on
 
+:: Ensure the build environment's node is used first
+set "PATH=%BUILD_PREFIX%\Scripts;%BUILD_PREFIX%;%PATH%"
+
 md %LIBRARY_PREFIX%\share\pnpm
 pushd %LIBRARY_PREFIX%\share\pnpm
 md node_modules
-cmd /c "npm install pnpm@%PKG_VERSION%"
+cmd /c "%BUILD_PREFIX%\Scripts\npm install pnpm@%PKG_VERSION%"
 if errorlevel 1 exit 1
 popd
 
@@ -26,9 +29,10 @@ if errorlevel 1 exit 1
 :: fuse-shared-library is not currently supported on: win -> https://github.com/fuse-friends/fuse-shared-library/blob/master/index.js#L17
 :: Skip installing optional dependencies for windows
 @echo "## Installing prod dependencies"
-cmd /c npx pnpm@%PKG_VERSION% install --prod --no-optional
+:: Use full path to npx and add --engine-strict=false to bypass Node.js version checks
+cmd /c "%BUILD_PREFIX%\Scripts\npx pnpm@%PKG_VERSION% install --prod --no-optional --engine-strict=false"
 if errorlevel 1 exit 1
 
 @echo "## Generating ThirdPartyLicenses.txt"
-cmd /c npx pnpm@%PKG_VERSION% licenses list --json | npx @quantco/pnpm-licenses generate-disclaimer --json-input "--filter=["""@pnpm/*"""]" --output-file=ThirdPartyLicenses.txt
+cmd /c "%BUILD_PREFIX%\Scripts\npx pnpm@%PKG_VERSION% licenses list --json | %BUILD_PREFIX%\Scripts\npx @quantco/pnpm-licenses generate-disclaimer --json-input "--filter=["""@pnpm/*"""]" --output-file=ThirdPartyLicenses.txt"
 if errorlevel 1 exit 1

@@ -14,8 +14,6 @@ build:
   ignore_run_exports:
     - nodejs
     - vs2015_runtime
-  # nodejs is not avaliable on linux-s390x
-  skip: True  # [s390x]
 
 requirements:
   build:
