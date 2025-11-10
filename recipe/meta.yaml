@@ -23,12 +23,12 @@ requirements:
     - {{ compiler('cxx') }}
     - make  # [not win]
     # https://pnpm.io/installation#compatibility
-    # pnp10 supports from nodejs18
-    - nodejs >=18
+    # pnpm 10.4.1 requires nodejs 20+ due to dependencies
+    - nodejs >=20
   host:
-    - nodejs >=18
+    - nodejs >=20
   run:
-    - nodejs >=18
+    - nodejs >=20
     - vs2015_runtime  # [win]
 
 test:
