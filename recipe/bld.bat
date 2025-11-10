@@ -32,7 +32,8 @@ if errorlevel 1 exit 1
 @echo "## Installing prod dependencies"
 :: Use npx from PATH and add --engine-strict=false to bypass Node.js version checks
 :: Use --node-linker=hoisted on Windows to avoid symlink permission issues
-cmd /c "npx pnpm@%PKG_VERSION% install --prod --no-optional --engine-strict=false --node-linker=hoisted"
+:: Use --no-frozen-lockfile to allow pnpm to update the lockfile after we've modified package.json
+cmd /c "npx pnpm@%PKG_VERSION% install --prod --no-optional --engine-strict=false --node-linker=hoisted --no-frozen-lockfile"
 if errorlevel 1 exit 1
 
 @echo "## Generating ThirdPartyLicenses.txt"
