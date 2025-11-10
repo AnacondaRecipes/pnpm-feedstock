@@ -38,10 +38,15 @@ if errorlevel 1 exit 1
 :: fuse-shared-library is not currently supported on: win -> https://github.com/fuse-friends/fuse-shared-library/blob/master/index.js#L17
 :: Skip installing optional dependencies for windows
 @echo "## Installing prod dependencies"
+
+:: First, clear any cached pnpm store that might have stale references
+cmd /c "npx pnpm@%PKG_VERSION% store prune"
+
 :: Use npx from PATH and add --engine-strict=false to bypass Node.js version checks
 :: Use --node-linker=hoisted on Windows to avoid symlink permission issues
 :: Use --no-frozen-lockfile to allow pnpm to regenerate the lockfile after removing patches
-cmd /c "npx pnpm@%PKG_VERSION% install --prod --no-optional --engine-strict=false --node-linker=hoisted --no-frozen-lockfile"
+:: Use --force to ensure fresh resolution without cache
+cmd /c "npx pnpm@%PKG_VERSION% install --prod --no-optional --engine-strict=false --node-linker=hoisted --no-frozen-lockfile --force"
 if errorlevel 1 exit 1
 
 @echo "## Generating ThirdPartyLicenses.txt"
