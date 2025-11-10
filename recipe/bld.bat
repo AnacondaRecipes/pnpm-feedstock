@@ -21,8 +21,12 @@ popd
 rmdir pnpm\artifacts\exe /s /q
 if errorlevel 1 exit 1
 
-:: Delete lockfile and any cached state BEFORE modifying package.json
-del pnpm-lock.yaml
+:: Delete all lockfiles and cached state BEFORE modifying package.json
+if exist pnpm-lock.yaml del pnpm-lock.yaml
+:: Delete any workspace lockfiles
+for /r %%i in (pnpm-lock.yaml) do (
+    if exist "%%i" del "%%i"
+)
 if exist .pnpm-store rmdir /s /q .pnpm-store
 if exist node_modules rmdir /s /q node_modules
 
