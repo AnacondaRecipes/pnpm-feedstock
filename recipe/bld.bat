@@ -31,7 +31,8 @@ if errorlevel 1 exit 1
 :: Skip installing optional dependencies for windows
 @echo "## Installing prod dependencies"
 :: Use npx from PATH and add --engine-strict=false to bypass Node.js version checks
-cmd /c "npx pnpm@%PKG_VERSION% install --prod --no-optional --engine-strict=false"
+:: Use --node-linker=hoisted on Windows to avoid symlink permission issues
+cmd /c "npx pnpm@%PKG_VERSION% install --prod --no-optional --engine-strict=false --node-linker=hoisted"
 if errorlevel 1 exit 1
 
 @echo "## Generating ThirdPartyLicenses.txt"
