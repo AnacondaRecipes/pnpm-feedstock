@@ -2,6 +2,9 @@
 
 set -exuo pipefail
 
+# Ensure the build environment's node is used first
+export PATH="$BUILD_PREFIX/bin:$PATH"
+
 if [[ "${target_platform}" == "osx-arm64" ]]; then
     export npm_config_arch="arm64"
 fi
@@ -21,7 +24,7 @@ NPM_CONFIG_USERCONFIG=/tmp/nonexistentrc
 
 # install pnpm globally from the npm registry
 # all things coming after this are just concerned with generating the thirdPartyLicenses.txt file
-npm install -g ${PKG_NAME}@${PKG_VERSION}
+$BUILD_PREFIX/bin/npm install -g ${PKG_NAME}@${PKG_VERSION}
 
 # pnpm uses pnpm as its package manager, which is kind of awkward to deal with sometimes
 
@@ -40,7 +43,13 @@ rm -rf pnpm/artifacts/exe
 # get rid of the patchedDependencies entry in the root package.json
 node $RECIPE_DIR/deletePatchedDependencies.js
 
-npx pnpm@${PKG_VERSION} install
+# Clear any pnpm cache and config that might have the old node version
+export PNPM_HOME="$BUILD_PREFIX/pnpm-home"
+mkdir -p "$PNPM_HOME"
+
+# Use the full path to npx to ensure we're using the build environment's node
+# Set engine-strict to false to bypass engine compatibility checks
+$BUILD_PREFIX/bin/npx pnpm@${PKG_VERSION} install --engine-strict=false
 
 # generate the thirdPartyLicenses file using @quantco/pnpm-licenses
-npx pnpm@${PKG_VERSION} licenses list --json | npx @quantco/pnpm-licenses generate-disclaimer --json-input --filter='["@pnpm/*"]' --output-file=ThirdPartyLicenses.txt
+$BUILD_PREFIX/bin/npx pnpm@${PKG_VERSION} licenses list --json | $BUILD_PREFIX/bin/npx @quantco/pnpm-licenses generate-disclaimer --json-input --filter='["@pnpm/*"]' --output-file=ThirdPartyLicenses.txt
