@@ -23,6 +23,7 @@ requirements:
     # https://pnpm.io/installation#compatibility
     # pnpm 10.4.1 requires nodejs 20+ due to dependencies
     - nodejs >=20
+    - msys2-sed  # [win]
   host:
     - nodejs >=20
   run:
