@@ -46,6 +46,7 @@ cmd /c "npx pnpm@%PKG_VERSION% store prune"
 :: Use --node-linker=hoisted on Windows to avoid symlink permission issues
 :: Use --no-frozen-lockfile to allow pnpm to regenerate the lockfile after removing patches
 :: Use --force to ensure fresh resolution without cache
+del pnpm-lock.yaml
 cmd /c "npx pnpm@%PKG_VERSION% install --prod --no-optional --engine-strict=false --node-linker=hoisted --no-frozen-lockfile --force"
 if errorlevel 1 exit 1
 
